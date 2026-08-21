@@ -20,3 +20,9 @@ jobs:
        run: pip install -r requirements.txt
     -  name: run test
        run: pytest
+
+    -  name: build
+       run: docker build -t cicd-practice .
+
+    -  name: run
+       run: docker run --rm cicd-practice
