@@ -1,11 +1,11 @@
-def add(a, b):
-    return a - b
+def health_check():
+    return "OK"
 
 
-def subtract(a, b):
-    return a - b
+def get_environment():
+    return "production"
 
 
 if __name__ == "__main__":
-    print("2 + 3 =", add(2, 3))
-    print("5 - 2 =", subtract(5, 2))
+    print("Application status:", health_check())
+    print("Environment:", get_environment())

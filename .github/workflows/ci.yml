@@ -1,22 +1,22 @@
-name: My first CI
+name: My CI
 
-on: push
+on: 
+  push:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  hello:
+    runs-on: ubuntu:latest
 
     steps:
-    -  name: Checkout Code
+    -  name: first
        uses: actions/checkout@v4
 
-    -  name: Setup Python
+    -  name: second
        uses: actions/setup-python@v5
-       with:
+       with: 
          python-version: "3.12"
 
-    -  name: Install dependencies
+    -  name: install dependencies
        run: pip install -r requirements.txt
-
-    -  name: Run tests
+    -  name: run test
        run: pytest
