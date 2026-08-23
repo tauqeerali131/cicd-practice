@@ -23,19 +23,29 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    
+    permissions:
+      id-token: write
+      contents: read
     steps:
+    -  name: configure aws 
+       uses: aws-actions/configure-aws-credentials@v4
+       with:
+         role-to-assume: arn:aws:iam::806168575689:role/GitHubActionsECRPushPolicy
+         aws-region: us-east-1
+    -  name: Login to ECR
+       id: login-ecr
+       uses: aws-actions/amazon-ecr-login@v2
+
+
     -  name: checkout the code
        uses: actions/checkout@v4
 
     -  name: build
-       run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/cicd-practice:v1 .
+       run: docker build -t ${{ steps.login-ecr.outputs.registry }}/cicd-practice:v1 .
 
     -  name: run
-       run: docker run --rm ${{ secrets.DOCKERHUB_USERNAME }}/cicd-practice:v1
-    -  name: login docker
-       uses: docker/login-action@v3
-       with:
-         username: ${{ secrets.DOCKERHUB_USERNAME }}
-         password: ${{ secrets.DOCKERHUB_TOKEN }}
+       run: docker run --rm ${{ steps.login-ecr.outputs.registry }}/cicd-practice:v1
+    
     -  name: image push
-       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/cicd-practice:v1
+       run: docker push ${{ steps.login-ecr.outputs.registry }}/cicd-practice:v1
