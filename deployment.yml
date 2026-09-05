@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: cicd-practice
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: test
+
+
+  template:
+    metadata:
+      labels:
+        app: test
+
+    spec:
+      containers:
+      -  name: cicd-practice
+         image: 806168575689.dkr.ecr.us-east-1.amazonaws.com/cicd-practice:v1

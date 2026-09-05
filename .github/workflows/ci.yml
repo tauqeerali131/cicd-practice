@@ -49,3 +49,25 @@ jobs:
     
     -  name: image push
        run: docker push ${{ steps.login-ecr.outputs.registry }}/cicd-practice:v1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    -  name: deploy to ec2
+       uses: appleboy/ssh-actions@v1.2.2
+       with:
+         host: ${{ secrets.EC2_HOST }}
+         username: ${{ secrets.EC2_USER }}
+         key: ${{ secrets.EC2_SSH_KEY }}
+         script: |
+           aws ecr get-login-password --region us-east-1 |\
+           docker login --username AWS --password-stdin 806168575689.dkr.ecr.us-east-1.amazonaws.com
+           docker pull 806168575689.dkr.ecr.us-east-1.amazonaws.com/cicd-practice:v1
+
+           docker stop cicd-practice || true
+           docker rm cicd-practice || true
+           docker run -d\
+             --name cicd-practice \
+               806168575689.dkr.ecr.us-east-1.amazonaws.com/cicd-practice:v1
